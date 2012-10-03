@@ -1,0 +1,26 @@
+#####################General#####################
+place-on-sign: true
+sign-text: [HC]
+place-block: CHEST
+place-radius-block: false
+radius-block-type: GOLD_BLOCK
+###################Maintenance###################
+explode-on-destroy: false
+destroy-if-no-money: true
+destroy-if-not-part-of-town: true
+##################Towny Section##################
+use-towny: false				#Enable/Disable towny
+use-town-bank: false			#Use town banks instead of player accounts.
+friendly-allies: true			#Should turrets treat allied towns members as friends or foe?
+ignore-town-borders: false 		#Should HeroCiv recognize structures outside town border?
+mayor-only: true				#Only Mayors can utilize HeroCiv within town borders.
+#requires that "mayor-only" is set to false
+use-player-plots: false				#Players can only use HeroCiv within an owned plot
+#################Factions Section#################
+use-factions: false				#Enable/Disable factions
+transfer-control: true			#Transfer control of buildings during war
+###############SimpleClans Section###############
+use-simpleclans: false			#Enable/Disable simpleclans
+#####################Economy#####################
+use-economy: false
+use-towny-bank-money: true

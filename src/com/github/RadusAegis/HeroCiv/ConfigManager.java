@@ -23,6 +23,7 @@ public class ConfigManager {
         explode = config.getBoolean("explode-on-destroy", false);
         destroyNoMoney = config.getBoolean("destroy-if-no-money");
         destroyNoTown = config.getBoolean("destroy-if-not-part-of-town");
+        //useTownMoney = config.getBoolean("use-towny-bank-money");
         loadCharters();
     }
     
