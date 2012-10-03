@@ -1,0 +1,18 @@
+name: HeroCiv
+author: Radus
+database: false
+description: Advancement type building plugin.
+main: com.github.RadusAegis.HeroCiv.HeroCiv
+startup: postworld
+version: 0.1-b000
+depend: [Vault]
+softdepend: [Towny],[SimpleClans],[Factions],[iConomy],[BOSEconomy],[Essentials]
+commands:
+   herociv:
+      aliases: ['hc']
+      description: HeroCiv commands
+      usage: /<command>
+permissions:
+   herociv.admin:
+      description: Lets you use all commands
+      default: op
