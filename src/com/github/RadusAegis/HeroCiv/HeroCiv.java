@@ -17,11 +17,11 @@ import com.palmergames.bukkit.towny.object.TownyUniverse;
 import java.io.IOException;
 import java.util.*;
 import java.util.logging.Logger;
-import multitallented.redcastlemedia.bukkit.herostronghold.checkregiontask.CheckRegionTask;
-import multitallented.redcastlemedia.bukkit.herostronghold.effect.EffectManager;
-import multitallented.redcastlemedia.bukkit.herostronghold.events.CommandEffectEvent;
+import com.github.RadusAegis.HeroCiv.checkregiontask.CheckRegionTask;
+import multitallented.redcastlemedia.bukkit.HeroCiv.effect.EffectManager;
+import com.github.RadusAegis.HeroCiv.events.CommandEffectEvent;
 import com.github.RadusAegis.HeroCiv.listeners.*;
-import multitallented.redcastlemedia.bukkit.herostronghold.region.*;
+import com.github.RadusAegis.HeroCiv.region.*;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
 import org.bukkit.*;
@@ -71,7 +71,7 @@ public class HeroCiv extends JavaPlugin {
     @Override
     public boolean onCommand(CommandSender sender, org.bukkit.command.Command command, String label, String[] args) {
         if (!(sender instanceof Player)) {
-            sender.sendMessage("[HeroStronghold] doesn't recognize non-player commands.");
+            sender.sendMessage("[HeroCiv] doesn't recognize non-player commands.");
             return true;
         }
         Player player = (Player) sender;
@@ -82,35 +82,35 @@ public class HeroCiv extends JavaPlugin {
         SuperRegion sr1 = regionManager.getSuperRegion(args[1]);
         SuperRegion sr2 = regionManager.getSuperRegion(args[2]);
         if (sr1 == null || sr2 == null) {
-            player.sendMessage(ChatColor.GRAY + "[HeroStronghold] That isn't a valid super-region.");
+            player.sendMessage(ChatColor.GRAY + "[HeroCiv] That isn't a valid super-region.");
             return true;
         }
         
         //Check if already at war
         if (regionManager.hasWar(sr1, sr2)) {
-            player.sendMessage(ChatColor.GRAY + "[HeroStronghold] " + sr1.getName() + " is already at war!");
+            player.sendMessage(ChatColor.GRAY + "[HeroCiv] " + sr1.getName() + " is already at war!");
             return true;
         }
         
         //Check owner
         if (!sr1.hasOwner(player.getName())) {
-            player.sendMessage(ChatColor.GRAY + "[HeroStronghold] You are not an owner of " + sr1.getName());
+            player.sendMessage(ChatColor.GRAY + "[HeroCiv] You are not an owner of " + sr1.getName());
             return true;
         }
         
         //Calculate Cost
         ConfigManager cm = getConfigManager();
         if (!cm.getUseWar()) {
-            player.sendMessage(ChatColor.GRAY + "[HeroStronghold] This command is disabled in config.yml");
+            player.sendMessage(ChatColor.GRAY + "[HeroCiv] This command is disabled in config.yml");
             return true;
         }
         double cost = cm.getDeclareWarBase() + cm.getDeclareWarPer() * (sr1.getOwners().size() + sr1.getMembers().size() +
                 sr2.getOwners().size() + sr2.getMembers().size());
         
         //Check money
-        if (HeroStronghold.econ != null) {
+        if (HeroCiv.econ != null) {
             if (sr1.getBalance() < cost) {
-                player.sendMessage(ChatColor.GRAY + "[HeroStronghold] " + sr1.getName() + " doesn't have enough money to war with " + sr2.getName());
+                player.sendMessage(ChatColor.GRAY + "[HeroCiv] " + sr1.getName() + " doesn't have enough money to war with " + sr2.getName());
                 return true;
             } else {
                 regionManager.addBalance(sr1, -1 * cost);
@@ -124,7 +124,7 @@ public class HeroCiv extends JavaPlugin {
               @Override
               public void run()
               {
-                getServer().broadcastMessage(ChatColor.RED + "[HeroStronghold] " + sr1a.getName() + " has declared war on " + sr2a.getName() + "!");
+                getServer().broadcastMessage(ChatColor.RED + "[HeroCiv] " + sr1a.getName() + " has declared war on " + sr2a.getName() + "!");
               }
         }.run();
         return true;
@@ -135,35 +135,35 @@ public class HeroCiv extends JavaPlugin {
         SuperRegion sr1 = regionManager.getSuperRegion(args[1]);
         SuperRegion sr2 = regionManager.getSuperRegion(args[2]);
         if (sr1 == null || sr2 == null) {
-            player.sendMessage(ChatColor.GRAY + "[HeroStronghold] That isn't a valid super-region.");
+            player.sendMessage(ChatColor.GRAY + "[HeroCiv] That isn't a valid super-region.");
             return true;
         }
         
         //Check if already at war
         if (!regionManager.hasWar(sr1, sr2)) {
-            player.sendMessage(ChatColor.GRAY + "[HeroStronghold] " + sr1.getName() + " isn't at war.");
+            player.sendMessage(ChatColor.GRAY + "[HeroCiv] " + sr1.getName() + " isn't at war.");
             return true;
         }
         
         //Check owner
         if (!sr1.hasOwner(player.getName())) {
-            player.sendMessage(ChatColor.GRAY + "[HeroStronghold] You are not an owner of " + sr1.getName());
+            player.sendMessage(ChatColor.GRAY + "[HeroCiv] You are not an owner of " + sr1.getName());
             return true;
         }
         
         //Calculate Cost
         ConfigManager cm = getConfigManager();
         if (!cm.getUseWar()) {
-            player.sendMessage(ChatColor.GRAY + "[HeroStronghold] This command is disabled in config.yml");
+            player.sendMessage(ChatColor.GRAY + "[HeroCiv] This command is disabled in config.yml");
             return true;
         }
         double cost = cm.getMakePeaceBase() + cm.getMakePeacePer() * (sr1.getOwners().size() + sr1.getMembers().size() +
                 sr2.getOwners().size() + sr2.getMembers().size());
         
         //Check money
-        if (HeroStronghold.econ != null) {
+        if (HeroCiv.econ != null) {
             if (sr1.getBalance() < cost) {
-                player.sendMessage(ChatColor.GRAY + "[HeroStronghold] " + sr1.getName() + " doesn't have enough money to make peace with " + sr2.getName());
+                player.sendMessage(ChatColor.GRAY + "[HeroCiv] " + sr1.getName() + " doesn't have enough money to make peace with " + sr2.getName());
                 return true;
             } else {
                 regionManager.addBalance(sr1, -1 * cost);
@@ -177,7 +177,7 @@ public class HeroCiv extends JavaPlugin {
               @Override
               public void run()
               {
-                getServer().broadcastMessage(ChatColor.RED + "[HeroStronghold] " + sr1a.getName() + " has made peace with " + sr2a.getName() + "!");
+                getServer().broadcastMessage(ChatColor.RED + "[HeroCiv] " + sr1a.getName() + " has made peace with " + sr2a.getName() + "!");
               }
         }.run();
         return true;
@@ -186,12 +186,12 @@ public class HeroCiv extends JavaPlugin {
             //Check if valid super region
             SuperRegionType currentRegionType = regionManager.getSuperRegionType(args[1]);
             if (currentRegionType == null) {
-                player.sendMessage(ChatColor.GRAY + "[HeroStronghold] " + args[1] + " isnt a valid region type");
+                player.sendMessage(ChatColor.GRAY + "[HeroCiv] " + args[1] + " isnt a valid region type");
                 int j=0;
                 String message = ChatColor.GOLD + "";
                 for (String s : regionManager.getSuperRegionTypes()) {
-                    if (perms == null || (perms.has(player, "herostronghold.create.all") ||
-                            perms.has(player, "herostronghold.create." + s))) {
+                    if (perms == null || (perms.has(player, "HeroCiv.create.all") ||
+                            perms.has(player, "HeroCiv.create." + s))) {
                         if (message.length() + s.length() + 2 > 55) {
                             player.sendMessage(message + ", ");
                             message = ChatColor.GOLD + "";
@@ -212,43 +212,43 @@ public class HeroCiv extends JavaPlugin {
             
             String regionTypeName = args[1].toLowerCase();
             //Permission Check
-            if (perms != null && !perms.has(player, "herostronghold.create.all") &&
-                    !perms.has(player, "herostronghold.create." + regionTypeName)) {
-                player.sendMessage(ChatColor.GRAY + "[HeroStronghold] you dont have permission to create a " + regionTypeName);
+            if (perms != null && !perms.has(player, "HeroCiv.create.all") &&
+                    !perms.has(player, "HeroCiv.create." + regionTypeName)) {
+                player.sendMessage(ChatColor.GRAY + "[HeroCiv] you dont have permission to create a " + regionTypeName);
                 return true;
             }
             
             //Make sure the super-region requires a Charter
             if (currentRegionType.getCharter() <= 0) {
-                player.sendMessage(ChatColor.GRAY + "[HeroStronghold] " + args[1] + " doesnt require a charter. /hs create " + args[1]);
+                player.sendMessage(ChatColor.GRAY + "[HeroCiv] " + args[1] + " doesnt require a charter. /hs create " + args[1]);
                 return true;
             }
             
             //Make sure the name isn't too long
             if (args[2].length() > 15) {
-                player.sendMessage(ChatColor.GRAY + "[HeroStronghold] Sorry but that name is too long. (16 max)");
+                player.sendMessage(ChatColor.GRAY + "[HeroCiv] Sorry but that name is too long. (16 max)");
                 return true;
             }
             //Check if valid filename
             if (!Util.validateFileName(args[2])) {
-                player.sendMessage(ChatColor.GRAY + "[HeroStronghold] Sorry but that is an invalid filename.");
+                player.sendMessage(ChatColor.GRAY + "[HeroCiv] Sorry but that is an invalid filename.");
                 return true;
             }
             
             //Check if valid name
             if (pendingCharters.containsKey(args[2].toLowerCase())) {
-                player.sendMessage(ChatColor.GRAY + "[HeroStronghold] There is already a charter or region with that name.");
+                player.sendMessage(ChatColor.GRAY + "[HeroCiv] There is already a charter or region with that name.");
                 return true;
             }
             if (getServer().getPlayerExact(args[2]) != null) {
-                player.sendMessage(ChatColor.GRAY + "[HeroStronghold] Dont name a super-region after a player");
+                player.sendMessage(ChatColor.GRAY + "[HeroCiv] Dont name a super-region after a player");
                 return true;
             }
             
             //Check if allowed super-region
             if (regionManager.getSuperRegion(args[2]) != null && (!regionManager.getSuperRegion(args[2]).hasOwner(player.getName())
                     || regionManager.getSuperRegion(args[2]).getType().equalsIgnoreCase(args[1]))) {
-                player.sendMessage(ChatColor.GRAY + "[HeroStronghold] That exact super-region already exists.");
+                player.sendMessage(ChatColor.GRAY + "[HeroCiv] That exact super-region already exists.");
                 return true;
             }
             
@@ -258,17 +258,17 @@ public class HeroCiv extends JavaPlugin {
             tempList.add(player.getName());
             pendingCharters.put(args[2].toLowerCase(), tempList);
             configManager.writeToCharter(args[2].toLowerCase(), tempList);
-            player.sendMessage(ChatColor.GOLD + "[HeroStronghold] Youve successfully created a charter for " + args[2]);
-            player.sendMessage(ChatColor.GOLD + "[HeroStronghold] Get other people to type /hs signcharter " + args[2] + " to get started.");
+            player.sendMessage(ChatColor.GOLD + "[HeroCiv] Youve successfully created a charter for " + args[2]);
+            player.sendMessage(ChatColor.GOLD + "[HeroCiv] Get other people to type /hs signcharter " + args[2] + " to get started.");
             return true;
         } else if (args.length > 1 && args[0].equalsIgnoreCase("charterstats")) {
             //Check if valid charter
             if (!pendingCharters.containsKey(args[1].toLowerCase())) {
-                player.sendMessage(ChatColor.GRAY + "[HeroStronghold] " + args[1] + " isn't a valid charter type.");
+                player.sendMessage(ChatColor.GRAY + "[HeroCiv] " + args[1] + " isn't a valid charter type.");
                 return true;
             }
             
-            player.sendMessage(ChatColor.GRAY + "[HeroStronghold] " + args[1] + " signatures: ");
+            player.sendMessage(ChatColor.GRAY + "[HeroCiv] " + args[1] + " signatures: ");
             int j=0;
             String message = ChatColor.GOLD + "";
             List<String> charter = pendingCharters.get(args[1]);
@@ -289,7 +289,7 @@ public class HeroCiv extends JavaPlugin {
                     player.sendMessage(message.substring(0, message.length() - 2));
                 }
             } else {
-                player.sendMessage(ChatColor.RED + "[HeroStronghold] There was an error loading that charter");
+                player.sendMessage(ChatColor.RED + "[HeroCiv] There was an error loading that charter");
                 warning("Failed to load charter " + args[1] + ".yml");
             }
             
@@ -297,13 +297,13 @@ public class HeroCiv extends JavaPlugin {
         } else if (args.length > 1 && args[0].equalsIgnoreCase("signcharter")) {
             //Check if valid name
             if (!pendingCharters.containsKey(args[1].toLowerCase())) {
-                player.sendMessage(ChatColor.GRAY + "[Herostronghold] There is no charter for " + args[1]);
+                player.sendMessage(ChatColor.GRAY + "[HeroCiv] There is no charter for " + args[1]);
                 return true;
             }
             
             //Check permission
-            if (perms != null && !perms.has(player, "herostronghold.join")) {
-                player.sendMessage(ChatColor.GRAY + "[HeroStronghold] You dont have permission to sign a charter.");
+            if (perms != null && !perms.has(player, "HeroCiv.join")) {
+                player.sendMessage(ChatColor.GRAY + "[HeroCiv] You dont have permission to sign a charter.");
                 return true;
             }
             
@@ -312,14 +312,14 @@ public class HeroCiv extends JavaPlugin {
             
             //Check if the player has already signed the charter once
             if (charter.contains(player.getName())) {
-                player.sendMessage(ChatColor.GRAY + "[HeroStronghold] You've already signed this charter.");
+                player.sendMessage(ChatColor.GRAY + "[HeroCiv] You've already signed this charter.");
                 return true;
             }
             
             charter.add(player.getName());
             configManager.writeToCharter(args[1], charter);
             pendingCharters.put(args[1], charter);
-            player.sendMessage(ChatColor.GOLD + "[HeroStronghold] You just signed the charter for " + args[1]);
+            player.sendMessage(ChatColor.GOLD + "[HeroCiv] You just signed the charter for " + args[1]);
             int remaining = 0;
             SuperRegionType srt = regionManager.getSuperRegionType(charter.get(0));
             if (srt != null) {
@@ -330,7 +330,7 @@ public class HeroCiv extends JavaPlugin {
             }
             Player owner = getServer().getPlayer(charter.get(1));
             if (owner != null && owner.isOnline()) {
-                owner.sendMessage(ChatColor.GOLD + "[HeroStronghold] " + player.getDisplayName() + " just signed your charter for " + args[1]);
+                owner.sendMessage(ChatColor.GOLD + "[HeroCiv] " + player.getDisplayName() + " just signed your charter for " + args[1]);
                 if (remaining > 0) {
                     owner.sendMessage(ChatColor.GOLD + "" + remaining + " signatures to go!");
                 }
@@ -338,28 +338,28 @@ public class HeroCiv extends JavaPlugin {
             return true;
         } else if (args.length > 1 && args[0].equals("cancelcharter")) {
             if (!pendingCharters.containsKey(args[1].toLowerCase())) {
-                player.sendMessage(ChatColor.GRAY + "[Herostronghold] There is no charter for " + args[1]);
+                player.sendMessage(ChatColor.GRAY + "[HeroCiv] There is no charter for " + args[1]);
                 return true;
             }
             
             if (pendingCharters.get(args[1]).size() < 2 || !pendingCharters.get(args[1]).get(1).equals(player.getName())) {
-                player.sendMessage(ChatColor.GRAY + "[HeroStronghold] You are the not owner of this charter.");
+                player.sendMessage(ChatColor.GRAY + "[HeroCiv] You are the not owner of this charter.");
                 return true;
             }
             
             configManager.removeCharter(args[1]);
             pendingCharters.remove(args[1]);
-            player.sendMessage(ChatColor.GOLD + "[HeroStronghold] You have canceled the charter for " + args[1]);
+            player.sendMessage(ChatColor.GOLD + "[HeroCiv] You have canceled the charter for " + args[1]);
             return true;
         } else if (args.length == 2 && args[0].equalsIgnoreCase("create")) {
             String regionName = args[1];
             
             //Permission Check
             boolean nullPerms = perms == null;
-            boolean createAll = nullPerms || perms.has(player, "herostronghold.create.all");
-            if (!(nullPerms || createAll || perms.has(player, "herostronghold.create." + regionName))) {
+            boolean createAll = nullPerms || perms.has(player, "HeroCiv.create.all");
+            if (!(nullPerms || createAll || perms.has(player, "HeroCiv.create." + regionName))) {
                 //TODO add limited quantity permissions here
-                player.sendMessage(ChatColor.GRAY + "[HeroStronghold] you dont have permission to create a " + regionName);
+                player.sendMessage(ChatColor.GRAY + "[HeroCiv] you dont have permission to create a " + regionName);
                 return true;
             }
             
@@ -367,22 +367,22 @@ public class HeroCiv extends JavaPlugin {
             //Check if player is standing someplace where a chest can be placed.
             Block currentBlock = currentLocation.getBlock();
             if (currentBlock.getTypeId() != 0) {
-                player.sendMessage(ChatColor.GRAY + "[HeroStronghold] please stand someplace where a chest can be placed.");
+                player.sendMessage(ChatColor.GRAY + "[HeroCiv] please stand someplace where a chest can be placed.");
                 return true;
             }
             RegionType currentRegionType = regionManager.getRegionType(regionName);
             if (currentRegionType == null) {
-                player.sendMessage(ChatColor.GRAY + "[HeroStronghold] " + regionName + " isnt a valid region type");
-                player.sendMessage(ChatColor.GRAY + "[HeroStronghold] Try /hs create " + regionName + " <insert_name_here>");
+                player.sendMessage(ChatColor.GRAY + "[HeroCiv] " + regionName + " isnt a valid region type");
+                player.sendMessage(ChatColor.GRAY + "[HeroCiv] Try /hs create " + regionName + " <insert_name_here>");
                 return true;
             }
             
-            //Check if player can afford to create this herostronghold
+            //Check if player can afford to create this HeroCiv
             double costCheck = 0;
             if (econ != null) {
                 double cost = currentRegionType.getMoneyRequirement();
                 if (econ.getBalance(player.getName()) < cost) {
-                    player.sendMessage(ChatColor.GRAY + "[HeroStronghold] You need $" + cost + " to make this type of structure.");
+                    player.sendMessage(ChatColor.GRAY + "[HeroCiv] You need $" + cost + " to make this type of structure.");
                     return true;
                 } else {
                     costCheck = cost;
@@ -392,13 +392,13 @@ public class HeroCiv extends JavaPlugin {
             
             //Check if over max number of regions of that type
             if (regionManager.isAtMaxRegions(player, currentRegionType)) {
-                player.sendMessage(ChatColor.GRAY + "[HeroStronghold] You dont have permission to build more " + currentRegionType.getName());
+                player.sendMessage(ChatColor.GRAY + "[HeroCiv] You dont have permission to build more " + currentRegionType.getName());
                 return true;
             }
             
-            //Check if too close to other HeroStrongholds
+            //Check if too close to other HeroCivs
             if (!regionManager.getContainingBuildRegions(currentLocation).isEmpty()) {
-                player.sendMessage (ChatColor.GRAY + "[HeroStronghold] You are too close to another HeroStronghold");
+                player.sendMessage (ChatColor.GRAY + "[HeroCiv] You are too close to another HeroCiv");
                 return true;
             }
             
@@ -412,14 +412,14 @@ public class HeroCiv extends JavaPlugin {
                 }
                 if (!sr.hasOwner(playername)) {
                     if (!sr.hasMember(playername) || !sr.getMember(playername).contains(regionName)) {
-                        player.sendMessage(ChatColor.GRAY + "[HeroStronghold] You dont have permission from an owner of " + sr.getName()
+                        player.sendMessage(ChatColor.GRAY + "[HeroCiv] You dont have permission from an owner of " + sr.getName()
                                 + " to create a " + regionName + " here");
                         return true;
                     }
                 }
             }
             if (!meetsReqs) {
-                player.sendMessage(ChatColor.GRAY + "[HeroStronghold] You are required to build this " + regionName + " in a:");
+                player.sendMessage(ChatColor.GRAY + "[HeroCiv] You are required to build this " + regionName + " in a:");
                 String message = ChatColor.GOLD + "";
                 int j=0;
                 for (String s : reqSuperRegion) {
@@ -492,7 +492,7 @@ public class HeroCiv extends JavaPlugin {
             
             
             if (reqMap != null && !reqMap.isEmpty()) {
-                player.sendMessage(ChatColor.GRAY + "[HeroStronghold] you don't have all of the required blocks in this structure.");
+                player.sendMessage(ChatColor.GRAY + "[HeroCiv] you don't have all of the required blocks in this structure.");
                 String message = ChatColor.GOLD + "";
                 int j=0;
                 for (int type : reqMap.keySet()) {
@@ -528,7 +528,7 @@ public class HeroCiv extends JavaPlugin {
                 heroes.getCharacterManager().getHero(player).gainExp(currentRegionType.getExp(), ExperienceType.EXTERNAL, player.getLocation());
             }
             regionManager.addRegion(currentLocation, regionName, owners);
-            player.sendMessage(ChatColor.GRAY + "[HeroStronghold] " + ChatColor.WHITE + "You successfully create a " + ChatColor.RED + regionName);
+            player.sendMessage(ChatColor.GRAY + "[HeroCiv] " + ChatColor.WHITE + "You successfully create a " + ChatColor.RED + regionName);
             
             //Tell the player what reagents are required for it to work
             String message = ChatColor.GOLD + "Reagents: ";
@@ -559,19 +559,19 @@ public class HeroCiv extends JavaPlugin {
         } else if (args.length > 2 && args[0].equalsIgnoreCase("create")) {
             //Check if valid name (further name checking later)
             if (args[2].length() > 16 || !Util.validateFileName(args[2])) {
-                player.sendMessage(ChatColor.GRAY + "[HeroStronghold] That name is invalid.");
+                player.sendMessage(ChatColor.GRAY + "[HeroCiv] That name is invalid.");
                 return true;
             }
             if (getServer().getPlayerExact(args[2]) != null) {
-                player.sendMessage(ChatColor.GRAY + "[HeroStronghold] Dont name a super-region after a player.");
+                player.sendMessage(ChatColor.GRAY + "[HeroCiv] Dont name a super-region after a player.");
                 return true;
             }
             
             String regionTypeName = args[1];
             //Permission Check
-            if (perms != null && !perms.has(player, "herostronghold.create.all") &&
-                    !perms.has(player, "herostronghold.create." + regionTypeName)) {
-                player.sendMessage(ChatColor.GRAY + "[HeroStronghold] you dont have permission to create a " + regionTypeName);
+            if (perms != null && !perms.has(player, "HeroCiv.create.all") &&
+                    !perms.has(player, "HeroCiv.create." + regionTypeName)) {
+                player.sendMessage(ChatColor.GRAY + "[HeroCiv] you dont have permission to create a " + regionTypeName);
                 return true;
             }
             
@@ -579,12 +579,12 @@ public class HeroCiv extends JavaPlugin {
             Location currentLocation = player.getLocation();
             SuperRegionType currentRegionType = regionManager.getSuperRegionType(regionTypeName);
             if (currentRegionType == null) {
-                player.sendMessage(ChatColor.GRAY + "[HeroStronghold] " + regionTypeName + " isnt a valid region type");
+                player.sendMessage(ChatColor.GRAY + "[HeroCiv] " + regionTypeName + " isnt a valid region type");
                 int j=0;
                 String message = ChatColor.GOLD + "";
                 for (String s : regionManager.getSuperRegionTypes()) {
-                    if (perms == null || (perms.has(player, "herostronghold.create.all") ||
-                            perms.has(player, "herostronghold.create." + s))) {
+                    if (perms == null || (perms.has(player, "HeroCiv.create.all") ||
+                            perms.has(player, "HeroCiv.create." + s))) {
                         if (message.length() + s.length() + 2 > 55) {
                             player.sendMessage(message);
                             message = ChatColor.GOLD + "";
@@ -603,12 +603,12 @@ public class HeroCiv extends JavaPlugin {
                 return true;
             }
             
-            //Check if player can afford to create this herostronghold
+            //Check if player can afford to create this HeroCiv
             double costCheck = 0;
             if (econ != null) {
                 double cost = currentRegionType.getMoneyRequirement();
                 if (econ.getBalance(player.getName()) < cost) {
-                    player.sendMessage(ChatColor.GRAY + "[HeroStronghold] You need $" + cost + " to make this type of region.");
+                    player.sendMessage(ChatColor.GRAY + "[HeroCiv] You need $" + cost + " to make this type of region.");
                     return true;
                 } else {
                     costCheck = cost;
@@ -619,18 +619,18 @@ public class HeroCiv extends JavaPlugin {
             Map<String, List<String>> members = new HashMap<String, List<String>>();
             int currentCharter = currentRegionType.getCharter();
             //Make sure the super-region has a valid charter
-            if (!HeroStronghold.perms.has(player, "herostronghold.admin")) {
+            if (!HeroCiv.perms.has(player, "HeroCiv.admin")) {
                 if (currentCharter > 0) {
                     try {
                         if (!pendingCharters.containsKey(args[2])) {
-                            player.sendMessage(ChatColor.GRAY + "[HeroStronghold] You need to start a charter first. /hs charter " + args[1] + " " + args[2]);
+                            player.sendMessage(ChatColor.GRAY + "[HeroCiv] You need to start a charter first. /hs charter " + args[1] + " " + args[2]);
                             return true;
                         } else if (pendingCharters.get(args[2]).size() <= currentCharter) {
-                            player.sendMessage(ChatColor.GRAY + "[HeroStronghold] You need " + currentCharter + " signature(s). /hs signcharter " + args[2]);
+                            player.sendMessage(ChatColor.GRAY + "[HeroCiv] You need " + currentCharter + " signature(s). /hs signcharter " + args[2]);
                             return true;
                         } else if (!pendingCharters.get(args[2]).get(0).equalsIgnoreCase(args[1]) ||
                                 !pendingCharters.get(args[2]).get(1).equalsIgnoreCase(player.getName())) {
-                            player.sendMessage(ChatColor.GRAY + "[HeroStronghold] The charter for this name is for a different region type or owner.");
+                            player.sendMessage(ChatColor.GRAY + "[HeroCiv] The charter for this name is for a different region type or owner.");
                             player.sendMessage(ChatColor.GRAY + "Owner: " + pendingCharters.get(args[2]).get(1) + ", Type: " + pendingCharters.get(args[2]).get(0));
                             return true;
                         } else {
@@ -653,11 +653,11 @@ public class HeroCiv extends JavaPlugin {
                 if (currentCharter > 0) {
                     try {
                         if (pendingCharters.get(args[2]).size() <= currentCharter) {
-                            player.sendMessage(ChatColor.GRAY + "[HeroStronghold] You need " + currentCharter + " signature(s). /hs signcharter " + args[2]);
+                            player.sendMessage(ChatColor.GRAY + "[HeroCiv] You need " + currentCharter + " signature(s). /hs signcharter " + args[2]);
                             return true;
                         } else if (!pendingCharters.get(args[2]).get(0).equalsIgnoreCase(args[1]) ||
                                 !pendingCharters.get(args[2]).get(1).equalsIgnoreCase(player.getName())) {
-                            player.sendMessage(ChatColor.GRAY + "[HeroStronghold] The charter for this name is for a different region type or owner.");
+                            player.sendMessage(ChatColor.GRAY + "[HeroCiv] The charter for this name is for a different region type or owner.");
                             player.sendMessage(ChatColor.GRAY + "Owner: " + pendingCharters.get(args[2]).get(1) + ", Type: " + pendingCharters.get(args[2]).get(0));
                             return true;
                         } else {
@@ -695,7 +695,7 @@ public class HeroCiv extends JavaPlugin {
             
             //Check if there already is a super-region by that name, but not if it's one of the child regions
             if (regionManager.getSuperRegion(args[2]) != null && (children == null || !children.contains(regionManager.getSuperRegion(args[2]).getType()))) {
-                player.sendMessage(ChatColor.GRAY + "[HeroStronghold] There is already a super-region by that name.");
+                player.sendMessage(ChatColor.GRAY + "[HeroCiv] There is already a super-region by that name.");
                 return true;
             }
             
@@ -710,7 +710,7 @@ public class HeroCiv extends JavaPlugin {
                 try {
                     if (sr.getLocation().distance(currentLocation) < radius + regionManager.getSuperRegionType(sr.getType()).getRawRadius() &&
                             (sr.getType().equalsIgnoreCase(regionTypeName) || !sr.hasOwner(player.getName()))) {
-                        player.sendMessage(ChatColor.GRAY + "[HeroStronghold] There is already a " + regionTypeName + " here");
+                        player.sendMessage(ChatColor.GRAY + "[HeroCiv] There is already a " + regionTypeName + " here");
                         return true;
                     }
                 } catch (IllegalArgumentException iae) {
@@ -725,7 +725,7 @@ public class HeroCiv extends JavaPlugin {
 
                     String rType = sr.getType();
                     if (!sr.hasOwner(player.getName()) && (!sr.hasMember(player.getName()) || !sr.getMember(player.getName()).contains(regionTypeName))) {
-                        player.sendMessage(ChatColor.GRAY + "[HeroStronghold] You are not permitted to build a " + regionTypeName + " inside " + sr.getName());
+                        player.sendMessage(ChatColor.GRAY + "[HeroCiv] You are not permitted to build a " + regionTypeName + " inside " + sr.getName());
                         return true;
                     } 
                     if (req.containsKey(rType)) {
@@ -777,7 +777,7 @@ public class HeroCiv extends JavaPlugin {
                 }
             }
             if (!req.isEmpty()) {
-                player.sendMessage(ChatColor.GRAY + "[HeroStronghold] This area doesnt have all of the required regions.");
+                player.sendMessage(ChatColor.GRAY + "[HeroCiv] This area doesnt have all of the required regions.");
                 int j=0;
                 String message = ChatColor.GOLD + "";
                 for (String s : req.keySet()) {
@@ -815,7 +815,7 @@ public class HeroCiv extends JavaPlugin {
             }
             //Check if more members needed to create the super-region
             if (owners.size() + members.size() < currentRegionType.getPopulation()) {
-                player.sendMessage(ChatColor.GRAY + "[HeroStronghold] You need " + (currentRegionType.getPopulation() - owners.size() - members.size()) + " more members.");
+                player.sendMessage(ChatColor.GRAY + "[HeroCiv] You need " + (currentRegionType.getPopulation() - owners.size() - members.size()) + " more members.");
                 return true;
             }
             for (String s : quietDestroy) {
@@ -842,13 +842,13 @@ public class HeroCiv extends JavaPlugin {
                 }
             }
             regionManager.addSuperRegion(args[2], currentLocation, regionTypeName, owners, members, currentRegionType.getDailyPower(), balance);
-            player.sendMessage(ChatColor.GOLD + "[HeroStronghold] You've created a new " + args[1] + " called " + args[2]);
+            player.sendMessage(ChatColor.GOLD + "[HeroCiv] You've created a new " + args[1] + " called " + args[2]);
             return true;
         } else if (args.length > 0 && args[0].equalsIgnoreCase("listall")) {
             if (args.length > 1) {
                 SuperRegionType srt = regionManager.getSuperRegionType(args[1]);
                 if (srt == null) {
-                    player.sendMessage(ChatColor.GRAY + "[HeroStronghold] There is no super-region type named " + args[1]);
+                    player.sendMessage(ChatColor.GRAY + "[HeroCiv] There is no super-region type named " + args[1]);
                     return true;
                 }
                 String message = ChatColor.GOLD + "";
@@ -890,106 +890,106 @@ public class HeroCiv extends JavaPlugin {
             return true;
         } else if (args.length > 2 && args[0].equalsIgnoreCase("withdraw")) {
             if (econ == null) {
-                player.sendMessage(ChatColor.GRAY + "[HeroStronghold] No econ plugin recognized");
+                player.sendMessage(ChatColor.GRAY + "[HeroCiv] No econ plugin recognized");
                 return true;
             }
             double amount = 0;
             try {
                 amount = Double.parseDouble(args[1]);
                 if (amount < 0) {
-                    player.sendMessage(ChatColor.GRAY + "[HeroStronghold] Withdraw a positive amount only.");
+                    player.sendMessage(ChatColor.GRAY + "[HeroCiv] Withdraw a positive amount only.");
                     return true;
                 }
             } catch (Exception e) {
-                player.sendMessage(ChatColor.GRAY + "[HeroStronghold] Invalid amount /hs withdraw <amount> <superregionname>");
+                player.sendMessage(ChatColor.GRAY + "[HeroCiv] Invalid amount /hs withdraw <amount> <superregionname>");
                 return true;
             }
             
             //Check if valid super-region
             SuperRegion sr = regionManager.getSuperRegion(args[2]);
             if (sr == null) {
-                player.sendMessage(ChatColor.GRAY + "[HeroStronghold] " + args[2] + " is not a super-region");
+                player.sendMessage(ChatColor.GRAY + "[HeroCiv] " + args[2] + " is not a super-region");
                 return true;
             }
             
             //Check if owner or permitted member
             if ((!sr.hasMember(player.getName()) || !sr.getMember(player.getName()).contains("withdraw")) && !sr.hasOwner(player.getName())) {
-                player.sendMessage(ChatColor.GRAY + "[HeroStronghold] You are not a member or dont have permission to withdraw");
+                player.sendMessage(ChatColor.GRAY + "[HeroCiv] You are not a member or dont have permission to withdraw");
                 return true;
             }
             
             //Check if bank has that money
             double output = regionManager.getSuperRegionType(sr.getType()).getOutput();
             if (output < 0 && sr.getBalance() - amount < -output) {
-                player.sendMessage(ChatColor.GRAY + "[HeroStronghold] You cant withdraw below the the minimum required.");
+                player.sendMessage(ChatColor.GRAY + "[HeroCiv] You cant withdraw below the the minimum required.");
                 return true;
             } else if (output >= 0 && sr.getBalance() - amount < 0) {
-                player.sendMessage(ChatColor.GRAY + "[HeroStronghold] " + sr.getName() + " doesnt have that much money.");
+                player.sendMessage(ChatColor.GRAY + "[HeroCiv] " + sr.getName() + " doesnt have that much money.");
                 return true;
             }
             
             //Withdraw the money
             econ.depositPlayer(player.getName(), amount);
             regionManager.addBalance(sr, -amount);
-            player.sendMessage(ChatColor.GOLD + "[HeroStronghold] You withdrew " + amount + " in the bank of " + args[2]);
+            player.sendMessage(ChatColor.GOLD + "[HeroCiv] You withdrew " + amount + " in the bank of " + args[2]);
             return true;
         } else if (args.length > 2 && args[0].equalsIgnoreCase("deposit")) {
             if (econ == null) {
-                player.sendMessage(ChatColor.GRAY + "[HeroStronghold] No econ plugin recognized");
+                player.sendMessage(ChatColor.GRAY + "[HeroCiv] No econ plugin recognized");
                 return true;
             }
             double amount = 0;
             try {
                 amount = Double.parseDouble(args[1]);
                 if (amount < 0) {
-                    player.sendMessage(ChatColor.GRAY + "[HeroStronghold] Nice try. Deposit a positive amount.");
+                    player.sendMessage(ChatColor.GRAY + "[HeroCiv] Nice try. Deposit a positive amount.");
                     return true;
                 }
             } catch (Exception e) {
-                player.sendMessage(ChatColor.GRAY + "[HeroStronghold] Invalid amount /hs deposit <amount> <superregionname>");
+                player.sendMessage(ChatColor.GRAY + "[HeroCiv] Invalid amount /hs deposit <amount> <superregionname>");
                 return true;
             }
             
             //Check if player has that money
             if (!econ.has(player.getName(), amount)) {
-                player.sendMessage(ChatColor.GRAY + "[HeroStronghold] You dont have that much money.");
+                player.sendMessage(ChatColor.GRAY + "[HeroCiv] You dont have that much money.");
                 return true;
             }
             
             //Check if valid super-region
             SuperRegion sr = regionManager.getSuperRegion(args[2]);
             if (sr == null) {
-                player.sendMessage(ChatColor.GRAY + "[HeroStronghold] " + args[2] + " is not a super-region");
+                player.sendMessage(ChatColor.GRAY + "[HeroCiv] " + args[2] + " is not a super-region");
                 return true;
             }
             
             //Check if owner or member
             if (!sr.hasMember(player.getName()) && !sr.hasOwner(player.getName())) {
-                player.sendMessage(ChatColor.GRAY + "[HeroStronghold] You are not a member of " + args[2]);
+                player.sendMessage(ChatColor.GRAY + "[HeroCiv] You are not a member of " + args[2]);
                 return true;
             }
             
             //Deposit the money
             econ.withdrawPlayer(player.getName(), amount);
             regionManager.addBalance(sr, amount);
-            player.sendMessage(ChatColor.GOLD + "[HeroStronghold] You deposited " + amount + " in the bank of " + args[2]);
+            player.sendMessage(ChatColor.GOLD + "[HeroCiv] You deposited " + amount + " in the bank of " + args[2]);
             return true;
         } else if (args.length > 2 && args[0].equalsIgnoreCase("settaxes")) {
             String playername = player.getName();
             //Check if the player is a owner or member of the super region
             SuperRegion sr = regionManager.getSuperRegion(args[2]);
             if (sr == null) {
-                player.sendMessage(ChatColor.GRAY + "[HeroStronghold] There is no region called " + args[2]);
+                player.sendMessage(ChatColor.GRAY + "[HeroCiv] There is no region called " + args[2]);
                 return true;
             }
             if (!sr.hasOwner(playername) && !sr.hasMember(playername)) {
-                player.sendMessage(ChatColor.GRAY + "[HeroStronghold] You dont have permission to set taxes for " + args[2] + ".");
+                player.sendMessage(ChatColor.GRAY + "[HeroCiv] You dont have permission to set taxes for " + args[2] + ".");
                 return true;
             }
             
             //Check if member has permission
             if (sr.hasMember(playername) && !sr.getMember(playername).contains("settaxes")) {
-                player.sendMessage(ChatColor.GRAY + "[HeroStronghold] You dont have permission to set taxes for " + args[2] + ".");
+                player.sendMessage(ChatColor.GRAY + "[HeroCiv] You dont have permission to set taxes for " + args[2] + ".");
                 return true;
             }
             
@@ -999,11 +999,11 @@ public class HeroCiv extends JavaPlugin {
                 taxes = Double.parseDouble(args[1]);
                 double maxTax = configManager.getMaxTax();
                 if (taxes < 0 && (maxTax == 0 || taxes <= maxTax)) {
-                    player.sendMessage(ChatColor.GRAY + "[HeroStronghold] You cant set negative taxes.");
+                    player.sendMessage(ChatColor.GRAY + "[HeroCiv] You cant set negative taxes.");
                     return true;
                 }
             } catch (Exception e) {
-                player.sendMessage(ChatColor.GRAY + "[HeroStronghold] Use /hs settaxes <amount> <superregionname>.");
+                player.sendMessage(ChatColor.GRAY + "[HeroCiv] Use /hs settaxes <amount> <superregionname>.");
                 return true;
             }
             
@@ -1011,7 +1011,7 @@ public class HeroCiv extends JavaPlugin {
             
             //Set the taxes
             regionManager.setTaxes(sr, taxes);
-            player.sendMessage(ChatColor.GOLD + "[HeroStronghold] You've set " + args[2] + "'s taxes to " + args[1]);
+            player.sendMessage(ChatColor.GOLD + "[HeroCiv] You've set " + args[2] + "'s taxes to " + args[1]);
             return true;
         } else if (args.length > 2 && args[0].equalsIgnoreCase("listperms")) {
             //Get target player
@@ -1019,7 +1019,7 @@ public class HeroCiv extends JavaPlugin {
             if (args.length > 3) {
                 Player currentPlayer = getServer().getPlayer(args[1]);
                 if (currentPlayer == null) {
-                    player.sendMessage(ChatColor.GOLD + "[HeroStronghold] Could not find " + args[1]);
+                    player.sendMessage(ChatColor.GOLD + "[HeroCiv] Could not find " + args[1]);
                     return true;
                 } else {
                     playername = currentPlayer.getName();
@@ -1028,12 +1028,12 @@ public class HeroCiv extends JavaPlugin {
                 playername = player.getName();
             }
             
-            String message = ChatColor.GRAY + "[HeroStronghold] " + playername + " perms for " + args[2] + ":";
+            String message = ChatColor.GRAY + "[HeroCiv] " + playername + " perms for " + args[2] + ":";
             String message2 = ChatColor.GOLD + "";
             //Check if the player is a owner or member of the super region
             SuperRegion sr = regionManager.getSuperRegion(args[2]);
             if (sr == null) {
-                player.sendMessage(ChatColor.GRAY + "[HeroStronghold] There is no region called " + args[2]);
+                player.sendMessage(ChatColor.GRAY + "[HeroCiv] There is no region called " + args[2]);
                 return true;
             }
             if (sr.hasOwner(playername)) {
@@ -1060,10 +1060,10 @@ public class HeroCiv extends JavaPlugin {
                 }
                 return true;
             }
-            player.sendMessage(ChatColor.GRAY + "[HeroStronghold] " + playername + " doesn't belong to that region.");
+            player.sendMessage(ChatColor.GRAY + "[HeroCiv] " + playername + " doesn't belong to that region.");
             return true;
         } else if (args.length > 0 && args[0].equalsIgnoreCase("listallperms")) {
-            player.sendMessage(ChatColor.GRAY + "[HeroStronghold] List of all member permissions:");
+            player.sendMessage(ChatColor.GRAY + "[HeroCiv] List of all member permissions:");
             player.sendMessage(ChatColor.GRAY + "member = is a member of the super-region.");
             player.sendMessage(ChatColor.GRAY + "title:<title> = player's title in channel");
             player.sendMessage(ChatColor.GRAY + "addmember = lets the player use /hs addmember");
@@ -1078,14 +1078,14 @@ public class HeroCiv extends JavaPlugin {
             }
             
             if (args.length < 2) {
-                player.sendMessage(ChatColor.GRAY + "[HeroStronghold] /hs ch channelname.  /hs ch (to go to all chat)");
+                player.sendMessage(ChatColor.GRAY + "[HeroCiv] /hs ch channelname.  /hs ch (to go to all chat)");
                 return true;
             }
             
             //Check if valid super region
             SuperRegion sr = regionManager.getSuperRegion(args[1]);
             if (sr == null) {
-                player.sendMessage(ChatColor.GRAY + "[HeroStronghold] There is no super-region by that name (" + args[1] + ").");
+                player.sendMessage(ChatColor.GRAY + "[HeroCiv] There is no super-region by that name (" + args[1] + ").");
                 player.sendMessage(ChatColor.GRAY + "Try /hs ch to go to all chat.");
                 return true;
             }
@@ -1093,7 +1093,7 @@ public class HeroCiv extends JavaPlugin {
             //Check if player is a member or owner of that super-region
             String playername = player.getName();
             if (!sr.hasMember(playername) && !sr.hasOwner(playername)) {
-                player.sendMessage(ChatColor.GRAY + "[HeroStronghold] You must be a member of " + args[1] + " before joining thier channel");
+                player.sendMessage(ChatColor.GRAY + "[HeroCiv] You must be a member of " + args[1] + " before joining thier channel");
                 return true;
             }
             
@@ -1104,7 +1104,7 @@ public class HeroCiv extends JavaPlugin {
             //Check if valid super region
             SuperRegion sr = regionManager.getSuperRegion(args[2]);
             if (sr == null) {
-                player.sendMessage(ChatColor.GRAY + "[HeroStronghold] There is no super-region by that name (" + args[2] + ").");
+                player.sendMessage(ChatColor.GRAY + "[HeroCiv] There is no super-region by that name (" + args[2] + ").");
                 return true;
             }
             
@@ -1112,55 +1112,55 @@ public class HeroCiv extends JavaPlugin {
             String playername = player.getName();
             boolean isOwner = sr.hasOwner(playername);
             boolean isMember = sr.hasMember(playername);
-            boolean isAdmin = HeroStronghold.perms.has(player, "herostronghold.admin");
+            boolean isAdmin = HeroCiv.perms.has(player, "HeroCiv.admin");
             if (!isMember && !isOwner && !isAdmin) {
-                player.sendMessage(ChatColor.GRAY + "[HeroStronghold] You arent a member of " + args[2]);
+                player.sendMessage(ChatColor.GRAY + "[HeroCiv] You arent a member of " + args[2]);
                 return true;
             }
             
             //Check if player has permission to invite players
             if (!isAdmin && isMember && !sr.getMember(playername).contains("addmember")) {
-                player.sendMessage(ChatColor.GRAY + "[HeroStronghold] You need permission addmember from an owner of " + args[2]);
+                player.sendMessage(ChatColor.GRAY + "[HeroCiv] You need permission addmember from an owner of " + args[2]);
                 return true;
             }
             
             //Check if valid player
             Player invitee = getServer().getPlayer(args[1]);
             if (invitee == null) {
-                player.sendMessage(ChatColor.GRAY + "[HeroStronghold] " + args[1] + " is not online.");
+                player.sendMessage(ChatColor.GRAY + "[HeroCiv] " + args[1] + " is not online.");
                 return true;
             }
             
-            //Check permission herostronghold.join
-            if (!perms.has(invitee, "herostronghold.join")) {
-                player.sendMessage(ChatColor.GRAY + "[HeroStronghold] " + args[1] + " doesnt have permission to join a super-region.");
+            //Check permission HeroCiv.join
+            if (!perms.has(invitee, "HeroCiv.join")) {
+                player.sendMessage(ChatColor.GRAY + "[HeroCiv] " + args[1] + " doesnt have permission to join a super-region.");
                 return true;
             }
             
             //Send an invite
             pendingInvites.put(invitee.getName(), args[2]);
-            player.sendMessage(ChatColor.GRAY + "[HeroStronghold] You have invited " + ChatColor.GOLD + invitee.getDisplayName() + ChatColor.GRAY + " to join " + ChatColor.GOLD + args[2]);
+            player.sendMessage(ChatColor.GRAY + "[HeroCiv] You have invited " + ChatColor.GOLD + invitee.getDisplayName() + ChatColor.GRAY + " to join " + ChatColor.GOLD + args[2]);
             if (invitee != null)
-                invitee.sendMessage(ChatColor.GOLD + "[HeroStronghold] You have been invited to join " + args[2] + ". /hs accept " + args[2]);
+                invitee.sendMessage(ChatColor.GOLD + "[HeroCiv] You have been invited to join " + args[2] + ". /hs accept " + args[2]);
             return true;
         } else if (args.length > 1 && args[0].equalsIgnoreCase("accept")) {
             //Check if player has a pending invite to that super-region
             if (!pendingInvites.containsKey(player.getName()) || !pendingInvites.get(player.getName()).equals(args[1])) {
-                player.sendMessage(ChatColor.GRAY + "[HeroStronghold] You don't have an invite to " + args[1]);
+                player.sendMessage(ChatColor.GRAY + "[HeroCiv] You don't have an invite to " + args[1]);
                 return true;
             }
             
             //Check if valid super region
             SuperRegion sr = regionManager.getSuperRegion(args[1]);
             if (sr == null) {
-                player.sendMessage(ChatColor.GRAY + "[HeroStronghold] There is no super-region by that name (" + args[1] + ").");
+                player.sendMessage(ChatColor.GRAY + "[HeroCiv] There is no super-region by that name (" + args[1] + ").");
                 return true;
             }
             
             //Check if player is a member or owner of that super-region
             String playername = player.getName();
             if (sr.hasMember(playername) || sr.hasOwner(playername)) {
-                player.sendMessage(ChatColor.GRAY + "[HeroStronghold] You are already a member of " + args[1]);
+                player.sendMessage(ChatColor.GRAY + "[HeroCiv] You are already a member of " + args[1]);
                 return true;
             }
             
@@ -1169,7 +1169,7 @@ public class HeroCiv extends JavaPlugin {
             perm.add("member");
             regionManager.setMember(sr, player.getName(), perm);
             pendingInvites.remove(player.getName());
-            player.sendMessage(ChatColor.GOLD + "[HeroStronghold] Welcome to " + args[1]);
+            player.sendMessage(ChatColor.GOLD + "[HeroCiv] Welcome to " + args[1]);
             for (String s : sr.getMembers().keySet()) {
                 Player p = getServer().getPlayer(s);
                 if (p != null) {
@@ -1190,13 +1190,13 @@ public class HeroCiv extends JavaPlugin {
             //Check valid super-region
             SuperRegion sr = regionManager.getSuperRegion(args[2]);
             if (sr == null) {
-                player.sendMessage(ChatColor.GRAY + "[HeroStronghold] There is no super-region named " + args[2]);
+                player.sendMessage(ChatColor.GRAY + "[HeroCiv] There is no super-region named " + args[2]);
                 return true;
             }
             
             //Check valid player
             if (p == null && !sr.hasMember(playername)) {
-                player.sendMessage(ChatColor.GRAY + "[Herostronghold] There is no player online named: " + args[1]);
+                player.sendMessage(ChatColor.GRAY + "[HeroCiv] There is no player online named: " + args[1]);
                 return true;
             } else {
                 playername = p.getName();
@@ -1205,26 +1205,26 @@ public class HeroCiv extends JavaPlugin {
             
             
             //Check if player is an owner of that region
-            if (!sr.hasOwner(player.getName()) && !HeroStronghold.perms.has(player, "herostronghold.admin")) {
-                player.sendMessage(ChatColor.GRAY + "[HeroStronghold] You arent an owner of " + args[2]);
+            if (!sr.hasOwner(player.getName()) && !HeroCiv.perms.has(player, "HeroCiv.admin")) {
+                player.sendMessage(ChatColor.GRAY + "[HeroCiv] You arent an owner of " + args[2]);
                 return true;
             }
             
             //Check if playername is already an owner
             if (sr.hasOwner(playername)) {
-                player.sendMessage(ChatColor.GRAY + "[HeroStronghold] " + args[1] + " is already an owner of " + args[2]);
+                player.sendMessage(ChatColor.GRAY + "[HeroCiv] " + args[1] + " is already an owner of " + args[2]);
                 return true;
             }
             
             //Check if player is member of super-region
             if (!sr.hasMember(playername)) {
-                player.sendMessage(ChatColor.GRAY + "[HeroStronghold] " + args[1] + " is not a member of " + args[2]);
+                player.sendMessage(ChatColor.GRAY + "[HeroCiv] " + args[1] + " is not a member of " + args[2]);
                 return true;
             }
             
             regionManager.removeMember(sr, playername);
             if (p != null)
-                p.sendMessage(ChatColor.GOLD + "[HeroStronghold] You are now an owner of " + args[2]);
+                p.sendMessage(ChatColor.GOLD + "[HeroCiv] You are now an owner of " + args[2]);
             for (String s : sr.getMembers().keySet()) {
                 Player pl = getServer().getPlayer(s);
                 if (pl != null) {
@@ -1247,7 +1247,7 @@ public class HeroCiv extends JavaPlugin {
             //Check valid super-region
             SuperRegion sr = regionManager.getSuperRegion(args[2]);
             if (sr == null) {
-                player.sendMessage(ChatColor.GRAY + "[HeroStronghold] There is no super-region named " + args[2]);
+                player.sendMessage(ChatColor.GRAY + "[HeroCiv] There is no super-region named " + args[2]);
                 return true;
             }
             
@@ -1258,11 +1258,11 @@ public class HeroCiv extends JavaPlugin {
             
             boolean isMember = sr.hasMember(playername); 
             boolean isOwner = sr.hasOwner(playername); 
-            boolean isAdmin = HeroStronghold.perms.has(player, "herostronghold.admin");
+            boolean isAdmin = HeroCiv.perms.has(player, "HeroCiv.admin");
             
             //Check if player is member or owner of super-region
             if (!isMember && !isOwner) {
-                player.sendMessage(ChatColor.GRAY + "[HeroStronghold] " + args[1] + " is not a member of " + args[2]);
+                player.sendMessage(ChatColor.GRAY + "[HeroCiv] " + args[1] + " is not a member of " + args[2]);
                 return true;
             }
             //Check if player is removing self
@@ -1272,7 +1272,7 @@ public class HeroCiv extends JavaPlugin {
                 } else if (isOwner) {
                     regionManager.setOwner(sr, playername);
                 }
-                player.sendMessage(ChatColor.GRAY + "[HeroStronghold] You have left " + args[2]);
+                player.sendMessage(ChatColor.GRAY + "[HeroCiv] You have left " + args[2]);
                 for (String s : sr.getMembers().keySet()) {
                     Player pl = getServer().getPlayer(s);
                     if (pl != null) {
@@ -1291,7 +1291,7 @@ public class HeroCiv extends JavaPlugin {
             //Check if player has remove permission
             if (!sr.hasOwner(player.getName()) &&  !(!sr.hasMember(player.getName()) || !sr.getMember(player.getName()).contains("remove"))
                     && !isAdmin) {
-                player.sendMessage(ChatColor.GRAY + "[HeroStronghold] You don't have permission to remove that member.");
+                player.sendMessage(ChatColor.GRAY + "[HeroCiv] You don't have permission to remove that member.");
                 return true;
             }
             
@@ -1304,7 +1304,7 @@ public class HeroCiv extends JavaPlugin {
                 return true;
             }
             if (p != null)
-                p.sendMessage(ChatColor.GRAY + "[HeroStronghold] You are no longer a member of " + args[2]);
+                p.sendMessage(ChatColor.GRAY + "[HeroCiv] You are no longer a member of " + args[2]);
             
             for (String s : sr.getMembers().keySet()) {
                 Player pl = getServer().getPlayer(s);
@@ -1326,19 +1326,19 @@ public class HeroCiv extends JavaPlugin {
             //Check valid super-region
             SuperRegion sr = regionManager.getSuperRegion(args[3]);
             if (sr == null) {
-                player.sendMessage(ChatColor.GRAY + "[HeroStronghold] There is no super-region named " + args[3]);
+                player.sendMessage(ChatColor.GRAY + "[HeroCiv] There is no super-region named " + args[3]);
                 return true;
             }
             
             //Check if player is an owner of the super region
             if (!sr.hasOwner(player.getName())) {
-                player.sendMessage(ChatColor.GRAY + "[HeroStronghold] You aren't an owner of " + args[3]);
+                player.sendMessage(ChatColor.GRAY + "[HeroCiv] You aren't an owner of " + args[3]);
                 return true;
             }
             
             //Check valid player
             if (p == null && !sr.hasMember(args[1])) {
-                player.sendMessage(ChatColor.GRAY + "[Herostronghold] There is no player named: " + args[1]);
+                player.sendMessage(ChatColor.GRAY + "[HeroCiv] There is no player named: " + args[1]);
                 return true;
             } else if (p != null) {
                 playername = p.getName();
@@ -1346,7 +1346,7 @@ public class HeroCiv extends JavaPlugin {
             
             //Check if player is member and not owner of super-region
             if (!sr.hasMember(playername)) {
-                player.sendMessage(ChatColor.GRAY + "[HeroStronghold] " + args[1] + " either owns, or is not a member of " + args[3]);
+                player.sendMessage(ChatColor.GRAY + "[HeroCiv] " + args[1] + " either owns, or is not a member of " + args[3]);
                 return true;
             }
             
@@ -1354,16 +1354,16 @@ public class HeroCiv extends JavaPlugin {
             if (perm.contains(args[2])) {
                 perm.remove(args[2]);
                 regionManager.setMember(sr, playername, perm);
-                player.sendMessage(ChatColor.GRAY + "[HeroStronghold] Removed perm " + args[2] + " for " + args[1] + " in " + args[3]);
+                player.sendMessage(ChatColor.GRAY + "[HeroCiv] Removed perm " + args[2] + " for " + args[1] + " in " + args[3]);
                 if (p != null)
-                    p.sendMessage(ChatColor.GRAY + "[HeroStronghold] Your perm " + args[2] + " was revoked in " + args[3]);
+                    p.sendMessage(ChatColor.GRAY + "[HeroCiv] Your perm " + args[2] + " was revoked in " + args[3]);
                 return true;
             } else {
                 perm.add(args[2]);
                 regionManager.setMember(sr, playername, perm);
-                player.sendMessage(ChatColor.GRAY + "[HeroStronghold] Added perm " + args[2] + " for " + args[1] + " in " + args[3]);
+                player.sendMessage(ChatColor.GRAY + "[HeroCiv] Added perm " + args[2] + " for " + args[1] + " in " + args[3]);
                 if (p != null)
-                    p.sendMessage(ChatColor.GRAY + "[HeroStronghold] You were granted permission " + args[2] + " in " + args[3]);
+                    p.sendMessage(ChatColor.GRAY + "[HeroCiv] You were granted permission " + args[2] + " in " + args[3]);
                 return true;
             }
         } else if (args.length > 0 && args[0].equalsIgnoreCase("whatshere")) {
@@ -1371,7 +1371,7 @@ public class HeroCiv extends JavaPlugin {
             boolean foundRegion = false;
             for (Region r : regionManager.getContainingRegions(loc)) {
                 foundRegion = true;
-                player.sendMessage(ChatColor.GRAY + "[HeroStronghold] Found Region ID: " + ChatColor.GOLD + r.getID());
+                player.sendMessage(ChatColor.GRAY + "[HeroCiv] Found Region ID: " + ChatColor.GOLD + r.getID());
                 String message = ChatColor.GRAY + "Type: " + r.getType();
                 if (!r.getOwners().isEmpty()) {
                     message += ", Owned by: " + r.getOwners().get(0);
@@ -1380,7 +1380,7 @@ public class HeroCiv extends JavaPlugin {
             }
             
             for (SuperRegion sr : regionManager.getContainingSuperRegions(loc)) {
-                player.sendMessage(ChatColor.GRAY + "[HeroStronghold] Found Super-Region named: " + ChatColor.GOLD + sr.getName());
+                player.sendMessage(ChatColor.GRAY + "[HeroCiv] Found Super-Region named: " + ChatColor.GOLD + sr.getName());
                 String message = ChatColor.GRAY + "Type: " + sr.getType();
                 if (!sr.getOwners().isEmpty()) {
                     message += ", Owned by: " + sr.getOwners().get(0);
@@ -1388,7 +1388,7 @@ public class HeroCiv extends JavaPlugin {
                 player.sendMessage(message);
             }
             if (!foundRegion) {
-                player.sendMessage(ChatColor.GRAY + "[HeroStronghold] There are no regions here.");
+                player.sendMessage(ChatColor.GRAY + "[HeroCiv] There are no regions here.");
             }
             return true;
         } else if (args.length > 1 && args[0].equalsIgnoreCase("info")) {
@@ -1396,11 +1396,11 @@ public class HeroCiv extends JavaPlugin {
             RegionType rt = regionManager.getRegionType(args[1]);
             SuperRegionType srt = regionManager.getSuperRegionType(args[1]);
             if (rt == null && srt == null) {
-                player.sendMessage(ChatColor.GRAY + "[HeroStronghold] There is no region type called " + args[1]);
+                player.sendMessage(ChatColor.GRAY + "[HeroCiv] There is no region type called " + args[1]);
                 return true;
             }
             if (rt != null) {
-                player.sendMessage(ChatColor.GRAY + "[HeroStronghold] Info for region type " + ChatColor.GOLD + args[1] + ":");
+                player.sendMessage(ChatColor.GRAY + "[HeroCiv] Info for region type " + ChatColor.GOLD + args[1] + ":");
                 player.sendMessage(ChatColor.GRAY + "Cost: " + ChatColor.GOLD + rt.getMoneyRequirement() + ChatColor.GRAY +
                         ", Payout: " + ChatColor.GOLD + rt.getMoneyOutput() + ChatColor.GRAY + ", Radius: " + ChatColor.GOLD + (int) Math.sqrt(rt.getRadius()));
                 
@@ -1538,7 +1538,7 @@ public class HeroCiv extends JavaPlugin {
                     player.sendMessage(message.substring(0, message.length()-2));
                 }
             } else if (srt != null) {
-                player.sendMessage(ChatColor.GRAY + "[HeroStronghold] Info for super-region type " + ChatColor.GOLD + args[1] + ":");
+                player.sendMessage(ChatColor.GRAY + "[HeroCiv] Info for super-region type " + ChatColor.GOLD + args[1] + ":");
                 player.sendMessage(ChatColor.GRAY + "Cost: " + ChatColor.GOLD + srt.getMoneyRequirement() + ChatColor.GRAY +
                         ", Payout: " + ChatColor.GOLD + srt.getOutput());
                 player.sendMessage(ChatColor.GRAY + "Power: " + ChatColor.GOLD + srt.getMaxPower() + " (+" + srt.getDailyPower() + "), " +
@@ -1646,7 +1646,7 @@ public class HeroCiv extends JavaPlugin {
                 Resident res = null;
                 boolean townyOverride = false;
                 boolean factionsOverride = false;
-                if (HeroStronghold.towny != null) {
+                if (HeroCiv.towny != null) {
                     try {
                       res = TownyUniverse.getDataSource().getResident(player.getName());
                       if (TownyUniverse.getTownBlock(loc) != null &&
@@ -1658,7 +1658,7 @@ public class HeroCiv extends JavaPlugin {
                         
                     }
                 }
-                if (HeroStronghold.factions != null) {
+                if (HeroCiv.factions != null) {
                     Faction f = Board.getFactionAt(new FLocation(loc));
                     if (f != null) {
                         if (f.getFPlayerAdmin().getPlayer().getName().equals(player.getName())) {
@@ -1674,19 +1674,19 @@ public class HeroCiv extends JavaPlugin {
                         
                     }
                 }
-                if (r.isOwner(player.getName()) || (perms != null && perms.has(player, "herostronghold.admin")) ||
+                if (r.isOwner(player.getName()) || (perms != null && perms.has(player, "HeroCiv.admin")) ||
                         townyOverride || factionsOverride) {
                     if (r.isOwner(playername)) {
-                        player.sendMessage(ChatColor.GRAY + "[HeroStronghold] " + playername + " is already an owner of this region.");
+                        player.sendMessage(ChatColor.GRAY + "[HeroCiv] " + playername + " is already an owner of this region.");
                         return true;
                     }
                     if (r.isMember(playername)) {
                         regionManager.setMember(r, playername);
                     }
                     regionManager.setOwner(r, playername);
-                    player.sendMessage(ChatColor.GRAY + "[HeroStronghold] " + ChatColor.WHITE + "Added " + playername + " as an owner.");
+                    player.sendMessage(ChatColor.GRAY + "[HeroCiv] " + ChatColor.WHITE + "Added " + playername + " as an owner.");
                     if (aPlayer != null) {
-                        aPlayer.sendMessage(ChatColor.GRAY + "[HeroStronghold] " + ChatColor.WHITE + "You're now a co-owner of " + player.getDisplayName() + "'s " + r.getType());
+                        aPlayer.sendMessage(ChatColor.GRAY + "[HeroCiv] " + ChatColor.WHITE + "You're now a co-owner of " + player.getDisplayName() + "'s " + r.getType());
                     }
                     return true;
                 } else {
@@ -1702,27 +1702,27 @@ public class HeroCiv extends JavaPlugin {
                     }
                     if (takeover) {
                         if (r.isOwner(playername)) {
-                            player.sendMessage(ChatColor.GRAY + "[HeroStronghold] " + playername + " is already an owner of this region.");
+                            player.sendMessage(ChatColor.GRAY + "[HeroCiv] " + playername + " is already an owner of this region.");
                             return true;
                         }
                         if (r.isMember(playername)) {
                             regionManager.setMember(r, playername);
                         }
                         regionManager.setOwner(r, playername);
-                        player.sendMessage(ChatColor.GRAY + "[HeroStronghold] " + ChatColor.WHITE + "Added " + playername + " as an owner.");
+                        player.sendMessage(ChatColor.GRAY + "[HeroCiv] " + ChatColor.WHITE + "Added " + playername + " as an owner.");
                         if (aPlayer != null) {
-                            aPlayer.sendMessage(ChatColor.GRAY + "[HeroStronghold] " + ChatColor.WHITE + "You're now a co-owner of " + player.getDisplayName() + "'s " + r.getType());
+                            aPlayer.sendMessage(ChatColor.GRAY + "[HeroCiv] " + ChatColor.WHITE + "You're now a co-owner of " + player.getDisplayName() + "'s " + r.getType());
                         }
                         return true;
                     } else {
-                        player.sendMessage(ChatColor.GRAY + "[HeroStronghold] You don't own this region.");
+                        player.sendMessage(ChatColor.GRAY + "[HeroCiv] You don't own this region.");
                         return true;
                     }
                 }
             }
             
             
-            player.sendMessage(ChatColor.GRAY + "[HeroStronghold] You're not standing in a region.");
+            player.sendMessage(ChatColor.GRAY + "[HeroCiv] You're not standing in a region.");
             return true;
         } else if (args.length > 1 && args[0].equalsIgnoreCase("addmember")) {
             String playername = args[1];
@@ -1739,25 +1739,25 @@ public class HeroCiv extends JavaPlugin {
             }
             Location loc = player.getLocation();
             for (Region r : regionManager.getContainingBuildRegions(loc)) {
-                if (r.isOwner(player.getName()) || (perms != null && perms.has(player, "herostronghold.admin"))) {
+                if (r.isOwner(player.getName()) || (perms != null && perms.has(player, "HeroCiv.admin"))) {
                     if (r.isMember(playername)) {
-                        player.sendMessage(ChatColor.GRAY + "[HeroStronghold] " + playername + " is already a member of this region.");
+                        player.sendMessage(ChatColor.GRAY + "[HeroCiv] " + playername + " is already a member of this region.");
                         return true;
                     }
                     if (r.isOwner(playername) && !(playername.equals(player.getName()) && r.getOwners().get(0).equals(player.getName()))) {
                         regionManager.setOwner(r, playername);
                     }
                     regionManager.setMember(r, playername);
-                    player.sendMessage(ChatColor.GRAY + "[HeroStronghold] " + ChatColor.WHITE + "Added " + playername + " to the region.");
+                    player.sendMessage(ChatColor.GRAY + "[HeroCiv] " + ChatColor.WHITE + "Added " + playername + " to the region.");
                     return true;
                 } else {
-                    player.sendMessage(ChatColor.GRAY + "[HeroStronghold] You don't own this region.");
+                    player.sendMessage(ChatColor.GRAY + "[HeroCiv] You don't own this region.");
                     return true;
                 }
             }
             
             
-            player.sendMessage(ChatColor.GRAY + "[HeroStronghold] You're not standing in a region.");
+            player.sendMessage(ChatColor.GRAY + "[HeroCiv] You're not standing in a region.");
             return true;
         } else if (args.length > 2 && args[0].equals("addmemberid")) {
             String playername = args[1];
@@ -1777,22 +1777,22 @@ public class HeroCiv extends JavaPlugin {
                 r = regionManager.getRegionByID(Integer.parseInt(args[2]));
                 r.getType();
             } catch (Exception e) {
-                player.sendMessage(ChatColor.GRAY + "[HeroStronghold] " + args[1] + " is not a valid id");
+                player.sendMessage(ChatColor.GRAY + "[HeroCiv] " + args[1] + " is not a valid id");
                 return true;
             }
-            if (r.isOwner(player.getName()) || (perms != null && perms.has(player, "herostronghold.admin"))) {
+            if (r.isOwner(player.getName()) || (perms != null && perms.has(player, "HeroCiv.admin"))) {
                 if (r.isMember(playername)) {
-                    player.sendMessage(ChatColor.GRAY + "[HeroStronghold] " + playername + " is already a member of this region.");
+                    player.sendMessage(ChatColor.GRAY + "[HeroCiv] " + playername + " is already a member of this region.");
                     return true;
                 }
                 if (r.isOwner(playername) && !(playername.equals(player.getName()) && r.getOwners().get(0).equals(player.getName()))) {
                     regionManager.setOwner(r, playername);
                 }
                 regionManager.setMember(r, playername);
-                player.sendMessage(ChatColor.GRAY + "[HeroStronghold] " + ChatColor.WHITE + "Added " + playername + " to the region.");
+                player.sendMessage(ChatColor.GRAY + "[HeroCiv] " + ChatColor.WHITE + "Added " + playername + " to the region.");
                 return true;
             } else {
-                player.sendMessage(ChatColor.GRAY + "[HeroStronghold] You don't own this region.");
+                player.sendMessage(ChatColor.GRAY + "[HeroCiv] You don't own this region.");
                 return true;
             }
         } else if (args.length > 1 && args[0].equalsIgnoreCase("setowner")) {
@@ -1801,21 +1801,21 @@ public class HeroCiv extends JavaPlugin {
             if (aPlayer != null) {
                 playername = aPlayer.getName();
             } else {
-                player.sendMessage(ChatColor.GRAY + "[HeroStronghold] " + playername + " must be online to setowner");
+                player.sendMessage(ChatColor.GRAY + "[HeroCiv] " + playername + " must be online to setowner");
                 return true;
             }
             
             Location loc = player.getLocation();
             for (Region r : regionManager.getContainingBuildRegions(loc)) {
-                if (r.isOwner(player.getName()) || (perms != null && perms.has(player, "herostronghold.admin"))) {
+                if (r.isOwner(player.getName()) || (perms != null && perms.has(player, "HeroCiv.admin"))) {
                     //Check if too far away
                     try {
                         if (player.getLocation().distanceSquared(aPlayer.getLocation()) > regionManager.getRegionType(r.getType()).getRawRadius()) {
-                            player.sendMessage(ChatColor.GRAY + "[HeroStronghold] " + playername + " must be close by also.");
+                            player.sendMessage(ChatColor.GRAY + "[HeroCiv] " + playername + " must be close by also.");
                             return true;
                         }
                     } catch (IllegalArgumentException iae) {
-                        player.sendMessage(ChatColor.GRAY + "[HeroStronghold] " + playername + " must be close by also.");
+                        player.sendMessage(ChatColor.GRAY + "[HeroCiv] " + playername + " must be close by also.");
                         return true;
                     }
                     
@@ -1825,19 +1825,19 @@ public class HeroCiv extends JavaPlugin {
                     regionManager.setMember(r, player.getName());
                     regionManager.setOwner(r, player.getName());
                     regionManager.setPrimaryOwner(r, playername);
-                    player.sendMessage(ChatColor.GRAY + "[HeroStronghold] " + ChatColor.WHITE + "Added " + playername + " as an owner.");
+                    player.sendMessage(ChatColor.GRAY + "[HeroCiv] " + ChatColor.WHITE + "Added " + playername + " as an owner.");
                     if (aPlayer != null) {
-                        aPlayer.sendMessage(ChatColor.GRAY + "[HeroStronghold] " + ChatColor.WHITE + "You're now a co-owner of " + player.getDisplayName() + "'s " + r.getType());
+                        aPlayer.sendMessage(ChatColor.GRAY + "[HeroCiv] " + ChatColor.WHITE + "You're now a co-owner of " + player.getDisplayName() + "'s " + r.getType());
                     }
                     return true;
                 } else {
-                    player.sendMessage(ChatColor.GRAY + "[HeroStronghold] You don't own this region.");
+                    player.sendMessage(ChatColor.GRAY + "[HeroCiv] You don't own this region.");
                     return true;
                 }
             }
             
             
-            player.sendMessage(ChatColor.GRAY + "[HeroStronghold] You're not standing in a region.");
+            player.sendMessage(ChatColor.GRAY + "[HeroCiv] You're not standing in a region.");
             return true;
         } else if (args.length > 1 && args[0].equalsIgnoreCase("remove")) {
             String playername = args[1];
@@ -1847,13 +1847,13 @@ public class HeroCiv extends JavaPlugin {
             }
             Location loc = player.getLocation();
             for (Region r : regionManager.getContainingBuildRegions(loc)) {
-                if (r.isOwner(player.getName()) || (perms != null && perms.has(player, "herostronghold.admin"))) {
+                if (r.isOwner(player.getName()) || (perms != null && perms.has(player, "HeroCiv.admin"))) {
                     if (r.isPrimaryOwner(playername)) {
-                        player.sendMessage(ChatColor.GRAY + "[HeroStronghold] You must use /hs setowner to change the original owner.");
+                        player.sendMessage(ChatColor.GRAY + "[HeroCiv] You must use /hs setowner to change the original owner.");
                         return true;
                     }
                     if (!r.isMember(playername) && !r.isOwner(playername)) {
-                        player.sendMessage(ChatColor.GRAY + "[HeroStronghold] " + playername + " doesn't belong to this region");
+                        player.sendMessage(ChatColor.GRAY + "[HeroCiv] " + playername + " doesn't belong to this region");
                         return true;
                     }
                     if (r.isMember(playername)) {
@@ -1861,48 +1861,48 @@ public class HeroCiv extends JavaPlugin {
                     } else if (r.isOwner(playername)) {
                         regionManager.setOwner(r, playername);
                     }
-                    player.sendMessage(ChatColor.GRAY + "[HeroStronghold] " + ChatColor.WHITE + "Removed " + playername + " from the region.");
+                    player.sendMessage(ChatColor.GRAY + "[HeroCiv] " + ChatColor.WHITE + "Removed " + playername + " from the region.");
                     return true;
                 } else {
-                    player.sendMessage(ChatColor.GRAY + "[HeroStronghold] You don't own this region.");
+                    player.sendMessage(ChatColor.GRAY + "[HeroCiv] You don't own this region.");
                     return true;
                 }
             }
             
-            player.sendMessage(ChatColor.GRAY + "[HeroStronghold] You're not standing in a region.");
+            player.sendMessage(ChatColor.GRAY + "[HeroCiv] You're not standing in a region.");
             return true;
         } else if (args.length == 1 && args[0].equalsIgnoreCase("destroy")) {
             Location loc = player.getLocation();
             Location locationToDestroy = null;
             for (Region r : regionManager.getContainingRegions(loc)) {
-                if (r.isOwner(player.getName()) || (perms != null && perms.has(player, "herostronghold.admin"))) {
+                if (r.isOwner(player.getName()) || (perms != null && perms.has(player, "HeroCiv.admin"))) {
                     regionManager.destroyRegion(r.getLocation());
                     locationToDestroy = r.getLocation();
                     break;
                 } else {
-                    player.sendMessage(ChatColor.GRAY + "[HeroStronghold] You don't own this region.");
+                    player.sendMessage(ChatColor.GRAY + "[HeroCiv] You don't own this region.");
                     return true;
                 }
             }
             
             if (locationToDestroy != null) {
                 regionManager.removeRegion(locationToDestroy);
-                player.sendMessage(ChatColor.GRAY + "[HeroStronghold] Region destroyed.");
+                player.sendMessage(ChatColor.GRAY + "[HeroCiv] Region destroyed.");
             } else {
-                player.sendMessage(ChatColor.GRAY + "[HeroStronghold] You're not standing in a region.");
+                player.sendMessage(ChatColor.GRAY + "[HeroCiv] You're not standing in a region.");
             }
             return true;
         } else if (args.length > 1 && args[0].equalsIgnoreCase("destroy")) {
             //Check if valid region
             SuperRegion sr = regionManager.getSuperRegion(args[1]);
             if (sr == null) {
-                player.sendMessage(ChatColor.GRAY + "[HeroStronghold] There is no region named " + args[1]);
+                player.sendMessage(ChatColor.GRAY + "[HeroCiv] There is no region named " + args[1]);
                 return true;
             }
             
             //Check if owner or admin of that region
-            if ((perms == null || !perms.has(player, "herostronghold.admin")) && (sr.getOwners().isEmpty() || !sr.getOwners().contains(player.getName()))) {
-                player.sendMessage(ChatColor.GRAY + "[HeroStronghold] You are not the owner of that region.");
+            if ((perms == null || !perms.has(player, "HeroCiv.admin")) && (sr.getOwners().isEmpty() || !sr.getOwners().contains(player.getName()))) {
+                player.sendMessage(ChatColor.GRAY + "[HeroCiv] You are not the owner of that region.");
                 return true;
             }
             
@@ -1910,12 +1910,12 @@ public class HeroCiv extends JavaPlugin {
             return true;
         } else if (args.length > 0 && args[0].equalsIgnoreCase("list")) {
             int j=0;
-            player.sendMessage(ChatColor.GRAY + "[HeroStronghold] list of Region Types");
+            player.sendMessage(ChatColor.GRAY + "[HeroCiv] list of Region Types");
             String message = ChatColor.GOLD + "";
             boolean permNull = perms == null;
-            boolean createAll = permNull || perms.has(player, "herostronghold.create.all");
+            boolean createAll = permNull || perms.has(player, "HeroCiv.create.all");
             for (String s : regionManager.getRegionTypes()) {
-                if (createAll || permNull || perms.has(player, "herostronghold.create." + s)) {
+                if (createAll || permNull || perms.has(player, "HeroCiv.create." + s)) {
                     if (message.length() + s.length() + 2 > 55) {
                         player.sendMessage(message);
                         message = ChatColor.GOLD + "";
@@ -1929,7 +1929,7 @@ public class HeroCiv extends JavaPlugin {
                 }
             }
             for (String s : regionManager.getSuperRegionTypes()) {
-                if (createAll || permNull || perms.has(player, "herostronghold.create." + s)) {
+                if (createAll || permNull || perms.has(player, "HeroCiv.create." + s)) {
                     if (message.length() + s.length() + 2 > 55) {
                         player.sendMessage(message);
                         message = ChatColor.GOLD + "";
@@ -1950,41 +1950,41 @@ public class HeroCiv extends JavaPlugin {
             //Check if valid super-region
             SuperRegion sr = regionManager.getSuperRegion(args[1]);
             if (sr == null) {
-                player.sendMessage(ChatColor.GRAY + "[HeroStronghold] There is no super-region by that name");
+                player.sendMessage(ChatColor.GRAY + "[HeroCiv] There is no super-region by that name");
                 return true;
             }
             
             //Check if valid name
             if (args[2].length() > 16 && Util.validateFileName(args[2])) {
-                player.sendMessage(ChatColor.GRAY + "[HeroStronghold] That name is too long. Use 15 characters or less");
+                player.sendMessage(ChatColor.GRAY + "[HeroCiv] That name is too long. Use 15 characters or less");
                 return true;
             }
             
             //Check if player can rename the super-region
-            if (!sr.hasOwner(player.getName()) && !HeroStronghold.perms.has(player, "herostronghold.admin")) {
-                player.sendMessage(ChatColor.GRAY + "[HeroStronghold] You don't have permission to rename that super-region.");
+            if (!sr.hasOwner(player.getName()) && !HeroCiv.perms.has(player, "HeroCiv.admin")) {
+                player.sendMessage(ChatColor.GRAY + "[HeroCiv] You don't have permission to rename that super-region.");
                 return true;
             }
             
             double cost = configManager.getRenameCost();
-            if (HeroStronghold.econ != null && cost > 0) {
-                if (!HeroStronghold.econ.has(player.getName(), cost)) {
-                    player.sendMessage(ChatColor.GRAY + "[HeroStronghold] It costs " + ChatColor.RED + cost + " to rename that.");
+            if (HeroCiv.econ != null && cost > 0) {
+                if (!HeroCiv.econ.has(player.getName(), cost)) {
+                    player.sendMessage(ChatColor.GRAY + "[HeroCiv] It costs " + ChatColor.RED + cost + " to rename that.");
                     return true;
                 } else {
-                    HeroStronghold.econ.withdrawPlayer(player.getName(), cost);
+                    HeroCiv.econ.withdrawPlayer(player.getName(), cost);
                 }
             }
             
             regionManager.destroySuperRegion(args[1], false);
             regionManager.addSuperRegion(args[2], sr.getLocation(), sr.getType(), sr.getOwners(), sr.getMembers(), sr.getPower(), sr.getBalance());
-            player.sendMessage(ChatColor.GOLD + "[HeroStronghold] " + args[1] + " is now " + args[2]);
+            player.sendMessage(ChatColor.GOLD + "[HeroCiv] " + args[1] + " is now " + args[2]);
             return true;
         } else if (args.length > 0 && (args[0].equalsIgnoreCase("stats") || args[0].equalsIgnoreCase("who"))) {
             if (args.length == 1) {
                 Location loc = player.getLocation();
                 for (Region r : regionManager.getContainingRegions(loc)) {
-                    player.sendMessage(ChatColor.GRAY + "[HeroStronghold] ==:|" + ChatColor.GOLD + r.getID() + " (" + r.getType() + ") " + ChatColor.GRAY + "|:==");
+                    player.sendMessage(ChatColor.GRAY + "[HeroCiv] ==:|" + ChatColor.GOLD + r.getID() + " (" + r.getType() + ") " + ChatColor.GRAY + "|:==");
                     String message = ChatColor.GRAY + "Owners: " + ChatColor.GOLD;
                     int j = 0;
                     for (String s : r.getOwners()) {
@@ -2026,7 +2026,7 @@ public class HeroCiv extends JavaPlugin {
                 }
 
                 
-                player.sendMessage(ChatColor.GRAY + "[HeroStronghold] There are no regions here.");
+                player.sendMessage(ChatColor.GRAY + "[HeroCiv] There are no regions here.");
                 return true;
             }
             
@@ -2037,7 +2037,7 @@ public class HeroCiv extends JavaPlugin {
                 SuperRegionType srt = regionManager.getSuperRegionType(sr.getType());
                 int population = sr.getOwners().size() + sr.getMembers().size();
                 double revenue = sr.getTaxes() * population + srt.getOutput();
-                player.sendMessage(ChatColor.GRAY + "[HeroStronghold] ==:|" + ChatColor.GOLD + sr.getName() + " (" + sr.getType() + ") " + ChatColor.GRAY + "|:==");
+                player.sendMessage(ChatColor.GRAY + "[HeroCiv] ==:|" + ChatColor.GOLD + sr.getName() + " (" + sr.getType() + ") " + ChatColor.GRAY + "|:==");
                 player.sendMessage(ChatColor.GRAY + "Population: " + ChatColor.GOLD + population + ChatColor.GRAY +
                         " Bank: " + (sr.getBalance() < srt.getOutput() ? ChatColor.RED : ChatColor.GOLD) + sr.getBalance() + ChatColor.GRAY +
                         " Power: " + (sr.getPower() < srt.getDailyPower() ? ChatColor.RED : ChatColor.GOLD) + sr.getPower() + 
@@ -2118,7 +2118,7 @@ public class HeroCiv extends JavaPlugin {
             Player p = getServer().getPlayer(args[1]);
             if (p != null) {
                 String playername = p.getName();
-                player.sendMessage(ChatColor.GRAY + "[HeroStronghold] " + p.getDisplayName() + " is a member of:");
+                player.sendMessage(ChatColor.GRAY + "[HeroCiv] " + p.getDisplayName() + " is a member of:");
                 String message = ChatColor.GOLD + "";
                 int j = 0;
                 for (SuperRegion sr1 : regionManager.getSortedSuperRegions()) {
@@ -2141,7 +2141,7 @@ public class HeroCiv extends JavaPlugin {
                 return true;
             }
             
-            player.sendMessage(ChatColor.GRAY + "[HeroStronghold] Could not find player or super-region by that name");
+            player.sendMessage(ChatColor.GRAY + "[HeroCiv] Could not find player or super-region by that name");
             return true;
         } else if (args.length > 0 && effectCommands.contains(args[0])) {
             Bukkit.getServer().getPluginManager().callEvent(new CommandEffectEvent(args, player));
@@ -2149,7 +2149,7 @@ public class HeroCiv extends JavaPlugin {
         } else {
             //TODO add a page 3 to help for more instruction?
             if (args.length > 0 && args[args.length - 1].equals("2")) {
-                sender.sendMessage(ChatColor.GRAY + "[HeroStronghold] by " + ChatColor.GOLD + "Multitallented" + ChatColor.GRAY + ": <> = required, () = optional" +
+                sender.sendMessage(ChatColor.GRAY + "[HeroCiv] by " + ChatColor.GOLD + "Multitallented" + ChatColor.GRAY + ": <> = required, () = optional" +
                         ChatColor.GOLD + " Page 2");
                 sender.sendMessage(ChatColor.GRAY + "/hs accept <name>");
                 sender.sendMessage(ChatColor.GRAY + "/hs rename <name> <newname>");
@@ -2160,15 +2160,15 @@ public class HeroCiv extends JavaPlugin {
                 sender.sendMessage(ChatColor.GRAY + "/hs toggleperm <playername> <perm> <name>");
                 sender.sendMessage(ChatColor.GRAY + "/hs destroy (name)");
                 sender.sendMessage(ChatColor.GRAY + "/hs ch (channel) -- Use /hs ch for all chat");
-                sender.sendMessage(ChatColor.GRAY + "Google 'HeroStronghold bukkit' for more info | " + ChatColor.GOLD + "Page 2/3");
+                sender.sendMessage(ChatColor.GRAY + "Google 'HeroCiv bukkit' for more info | " + ChatColor.GOLD + "Page 2/3");
             } else if (args.length > 0 && args[args.length - 1].equals("3")) {
-                sender.sendMessage(ChatColor.GRAY + "[HeroStronghold] by " + ChatColor.GOLD + "Multitallented" + ChatColor.GRAY + ": <> = required, () = optional" +
+                sender.sendMessage(ChatColor.GRAY + "[HeroCiv] by " + ChatColor.GOLD + "Multitallented" + ChatColor.GRAY + ": <> = required, () = optional" +
                         ChatColor.GOLD + " Page 3");
                 sender.sendMessage(ChatColor.GRAY + "/hs war <mysuperregion> <enemysuperregion>");
                 sender.sendMessage(ChatColor.GRAY + "/hs peace <mysuperregion> <enemysuperregion>");
-                sender.sendMessage(ChatColor.GRAY + "Google 'HeroStronghold bukkit' for more info | " + ChatColor.GOLD + "Page 3/3");
+                sender.sendMessage(ChatColor.GRAY + "Google 'HeroCiv bukkit' for more info | " + ChatColor.GOLD + "Page 3/3");
             } else {
-                sender.sendMessage(ChatColor.GRAY + "[HeroStronghold] by " + ChatColor.GOLD + "Multitallented" + ChatColor.GRAY + ": () = optional" +
+                sender.sendMessage(ChatColor.GRAY + "[HeroCiv] by " + ChatColor.GOLD + "Multitallented" + ChatColor.GRAY + ": () = optional" +
                         ChatColor.GOLD + " Page 1");
                 sender.sendMessage(ChatColor.GRAY + "/hs list");
                 sender.sendMessage(ChatColor.GRAY + "/hs info <regiontype|superregiontype>");
@@ -2179,7 +2179,7 @@ public class HeroCiv extends JavaPlugin {
                 sender.sendMessage(ChatColor.GRAY + "/hs create <regiontype> (name)");
                 sender.sendMessage(ChatColor.GRAY + "/hs addowner|addmember|remove <playername> (name)");
                 sender.sendMessage(ChatColor.GRAY + "/hs whatshere");
-                sender.sendMessage(ChatColor.GRAY + "Google 'HeroStronghold bukkit' for more info |" + ChatColor.GOLD + " Page 1/3");
+                sender.sendMessage(ChatColor.GRAY + "Google 'HeroCiv bukkit' for more info |" + ChatColor.GOLD + " Page 1/3");
             }
             
             return true;
@@ -2195,7 +2195,7 @@ public class HeroCiv extends JavaPlugin {
         if (rsp != null) {
             econ = rsp.getProvider();
             if (econ != null)
-                System.out.println("[HeroStronghold] Hooked into " + econ.getName());
+                System.out.println("[HeroCiv] Hooked into " + econ.getName());
         }
         return econ != null;
     }
@@ -2205,14 +2205,14 @@ public class HeroCiv extends JavaPlugin {
         if (permissionProvider != null) {
             perms = permissionProvider.getProvider();
             if (perms != null)
-                System.out.println("[HeroStronghold] Hooked into " + perms.getName());
+                System.out.println("[HeroCiv] Hooked into " + perms.getName());
         }
         return (perms != null);
     }
     private void setupTowny() {
         if (Bukkit.getPluginManager().isPluginEnabled("Towny")) {
             try {
-                HeroStronghold.towny = (Towny) Bukkit.getPluginManager().getPlugin("Towny");
+                HeroCiv.towny = (Towny) Bukkit.getPluginManager().getPlugin("Towny");
             } catch (Exception e) {
                 return;
             }
@@ -2224,7 +2224,7 @@ public class HeroCiv extends JavaPlugin {
     }
     
     public void warning(String s) {
-        String warning = "[HeroStronghold] " + s;
+        String warning = "[HeroCiv] " + s;
         Logger.getLogger("Minecraft").warning(warning);
     }
     
